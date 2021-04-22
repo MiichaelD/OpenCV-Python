@@ -1,6 +1,6 @@
 [submodule "Learn-OpenCV-in-3-hours"]
 	path = Learn-OpenCV-in-3-hours
-	url = ./Learn-OpenCV-in-3-hours
+	url = https://github.com/murtazahassan/OpenCV-Python-Tutorials-and-Projects.git
 [submodule "OpenCV-Python-Tutorials-and-Projects"]
 	path = OpenCV-Python-Tutorials-and-Projects
-	url = ./OpenCV-Python-Tutorials-and-Projects/
+	url = https://github.com/murtazahassan/OpenCV-Python-Tutorials-and-Projects.git
