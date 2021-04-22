@@ -1,0 +1,6 @@
+[submodule "Learn-OpenCV-in-3-hours"]
+	path = Learn-OpenCV-in-3-hours
+	url = ./Learn-OpenCV-in-3-hours
+[submodule "OpenCV-Python-Tutorials-and-Projects"]
+	path = OpenCV-Python-Tutorials-and-Projects
+	url = ./OpenCV-Python-Tutorials-and-Projects/
