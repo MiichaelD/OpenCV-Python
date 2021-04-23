@@ -4,7 +4,20 @@ import numpy as np
 # https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_core/py_image_arithmetics/py_image_arithmetics.html
 window_name = 'Result'
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
+
+pref_width = 1280
+pref_height = 720
+pref_fps = 30
+cap.set(cv2.CAP_PROP_FPS, pref_fps)
+width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+fps = int(cap.get(cv2.CAP_PROP_FPS))
+
+# Define the codec and create VideoWriter object
+fourcc = cv2.VideoWriter_fourcc(*'XVID')
+out = cv2.VideoWriter('watermark.avi', fourcc, pref_fps, (width,height))
+cv2.namedWindow(window_name)
 
 # Load watermark image
 img2 = cv2.imread('resources/opencv-logo.png')
@@ -40,8 +53,12 @@ def show_camera():
   while cap.isOpened():
     success, img = cap.read()
     img = add_watermark(img)
+    out.write(img)
     if (cv2.waitKey(1) & 0xFF) == ord('q'):
       cap.release()
+      out.release()
+      print('Finished recording')
+      cv2.imwrite('frame.jpg', img)
       break
   cv2.destroyAllWindows() 
 

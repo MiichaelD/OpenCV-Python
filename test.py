@@ -1,24 +1,47 @@
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
 
-BLUE = [255,0,0]
 window_name = 'Result'
 
-img = cv2.imread("OpenCV-Python-Tutorials-and-Projects/Resources/lena.png")
-img1 = img[:,:,::-1]
+cap = cv2.VideoCapture(0)
 
-replicate = cv2.copyMakeBorder(img1,10,10,10,10,cv2.BORDER_REPLICATE)
-reflect = cv2.copyMakeBorder(img1,10,10,10,10,cv2.BORDER_REFLECT)
-reflect101 = cv2.copyMakeBorder(img1,10,10,10,10,cv2.BORDER_REFLECT_101)
-wrap = cv2.copyMakeBorder(img1,10,10,10,10,cv2.BORDER_WRAP)
-constant= cv2.copyMakeBorder(img1,10,10,10,10,cv2.BORDER_CONSTANT,value=BLUE)
+# Load watermark image
+img2 = cv2.imread('resources/opencv-logo.png')
 
-plt.subplot(231),plt.imshow(img1,'gray'),plt.title('ORIGINAL')
-plt.subplot(232),plt.xticks([]), plt.yticks([]),plt.imshow(replicate,'gray'),plt.title('REPLICATE')
-plt.subplot(233),plt.xticks([]), plt.yticks([]),plt.imshow(reflect,'gray'),plt.title('REFLECT')
-plt.subplot(234),plt.imshow(reflect101,'gray'),plt.title('REFLECT_101')
-plt.subplot(235),plt.xticks([]), plt.yticks([]),plt.imshow(wrap,'gray'),plt.title('WRAP')
-plt.subplot(236),plt.xticks([]), plt.yticks([]),plt.imshow(constant,'gray'),plt.title('CONSTANT')
-plt.xticks([]), plt.yticks([])  # to hide tick values on X and Y axis
-plt.show()
+# I want to put logo on top-left corner, So I create a ROI
+rows, cols, channels = img2.shape
+
+# Now create a mask of logo and create its inverse mask also
+img2gray = cv2.cvtColor(img2,cv2.COLOR_BGR2GRAY)
+ret, mask = cv2.threshold(img2gray, 20, 255, cv2.THRESH_BINARY)
+cv2.imshow('mask', mask)
+mask_inv = cv2.bitwise_not(mask)
+cv2.imshow('mask_inv', mask_inv)
+
+def add_watermark(img): 
+  roi = img[0:rows, 0:cols] # What's behind the watermark
+  # Now black-out the area of logo in ROI
+  img1_bg = cv2.bitwise_and(roi, roi, mask = mask_inv) # The black gets baked in
+  cv2.imshow('img1_bg', img1_bg)
+
+  # Take only region of logo from logo image.
+  img2_fg = cv2.bitwise_and(img2, img2, mask = mask)
+  cv2.imshow('img2_fg', img2_fg)
+
+  # Put logo in ROI and modify the main image
+  dst = cv2.add(img1_bg, img2_fg)
+  dst = cv2.add(img1_bg, img2_fg)
+  img[0:rows, 0:cols ] = dst
+  cv2.imshow(window_name, img)
+  return img
+
+def show_camera():
+  while cap.isOpened():
+    success, img = cap.read()
+    img = add_watermark(img)
+    if (cv2.waitKey(1) & 0xFF) == ord('q'):
+      cap.release()
+      break
+  cv2.destroyAllWindows() 
+
+show_camera()

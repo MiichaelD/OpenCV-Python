@@ -2,7 +2,7 @@ import cv2
 import pyvirtualcam
 from pyvirtualcam import PixelFormat
 
-vc = cv2.VideoCapture(1)
+vc = cv2.VideoCapture(0)
 window_name = 'Result'
 if not vc.isOpened():
     raise RuntimeError('Could not open video source')
